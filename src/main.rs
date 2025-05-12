@@ -16,13 +16,12 @@ fn parse_args() -> CatArgs {
 
     let mut show_lines = false;
     let mut show_help = false;
-
     let mut file_paths = Vec::new();
 
     for arg in argv {
-        if arg == "--n" {
+        if arg == "-n" || arg == "--line_numbers" {
             show_lines = true
-        } else if arg == "--h" {
+        } else if arg == "-h" || arg == "--help" {
             show_help = true
         } else {
             file_paths.push(arg);
@@ -42,15 +41,20 @@ fn show_help_and_exit() {
 cat-rs — A minimal clone of the Unix `cat` command
 
 USAGE:
-    cat-rs [OPTIONS] <FILES>...
+    cat-rs [OPTIONS] [FILES]...
 
 OPTIONS:
-    --n         Show line numbers
-    --h         Show this help message
+    -n, --line_numbers     Show line numbers in the output
+    -h, --help             Show this help message and exit
+
+DESCRIPTION:
+    Reads files sequentially, writing them to standard output.
+    If no files are specified, or a file is '-', reads from standard input.
 
 EXAMPLES:
     cat-rs file.txt
-    cat-rs --n file1.txt file2.txt
+    cat-rs -n file1.txt file2.txt
+    echo \"hello\" | cat-rs -n
 "
     );
     std::process::exit(0);
