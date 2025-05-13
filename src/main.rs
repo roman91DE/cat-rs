@@ -12,7 +12,7 @@ struct CatArgs {
 }
 
 fn parse_args() -> CatArgs {
-    let argv = env::args().into_iter().skip(1);
+    let argv = env::args().skip(1);
 
     let mut show_lines = false;
     let mut show_help = false;
@@ -20,9 +20,9 @@ fn parse_args() -> CatArgs {
 
     for arg in argv {
         if arg == "-n" || arg == "--line_numbers" {
-            show_lines = true
+            show_lines = true;
         } else if arg == "-h" || arg == "--help" {
-            show_help = true
+            show_help = true;
         } else {
             file_paths.push(arg);
         }
@@ -69,24 +69,25 @@ fn main() -> Result<(), Box<dyn std::error::Error + 'static>> {
 
     if cat_args.file_paths.is_empty() {
         let reader = BufReader::new(std::io::stdin());
-        for (line_num, line_result) in reader.lines().enumerate() {
+        for (idx, line_result) in reader.lines().enumerate() {
+            let line_num = idx +1;
             let line = line_result?;
             if cat_args.show_lines {
-                println!("{} {}", line_num + 1, line);
+                println!("{line_num} {line}");
             } else {
-                println!("{}", line);
+                println!("{line}");
             }
         }
     } else {
-        for filepath in cat_args.file_paths.iter() {
+        for filepath in &cat_args.file_paths {
             let file = File::open(filepath)?;
             let reader = BufReader::new(file);
             for (line_num, line_result) in reader.lines().enumerate() {
                 let line = line_result?;
                 if cat_args.show_lines {
-                    println!("{} {}", line_num + 1, line);
+                    println!("{line_num} {line}");
                 } else {
-                    println!("{}", line);
+                    println!("{line}");
                 }
             }
         }
